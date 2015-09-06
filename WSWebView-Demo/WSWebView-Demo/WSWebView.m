@@ -141,6 +141,7 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
     NSLog(@"%s", __func__);
 }
 
+
 /*! @abstract Invoked when the web view needs to respond to an authentication challenge.
  @param webView The web view that received the authentication challenge.
  @param challenge The authentication challenge.

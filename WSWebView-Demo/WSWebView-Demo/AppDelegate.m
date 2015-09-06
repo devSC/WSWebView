@@ -1,9 +1,9 @@
 //
 //  AppDelegate.m
-//  TestWKWebView
+//  WSWebView-Demo
 //
 //  Created by YSC on 15/8/18.
-//  Copyright (c) 2015年 WowSai. All rights reserved.
+//  Copyright (c) 2015年 wilson-yuan. All rights reserved.
 //
 
 #import "AppDelegate.h"

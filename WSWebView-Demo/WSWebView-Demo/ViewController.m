@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "WSWebView.h"
 
 @interface ViewController ()
 
@@ -17,6 +18,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.jd.com/"]];
+    //    [webView loadRequest:request];
+    
+    WSWebView *webView = [[WSWebView alloc] initWithFrame:self.view.bounds];
+    
+    [self.view addSubview:webView];
+    
+    [webView ws_loadRequest:request];
+    
 }
 
 - (void)didReceiveMemoryWarning {
