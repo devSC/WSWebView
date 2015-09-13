@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		52012C971B8418A30029998B /* WSWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 52012C961B8418A30029998B /* WSWebView.m */; };
+		520CC4F81BA514100027DC13 /* WSWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 520CC4F71BA514100027DC13 /* WSWebView.m */; };
 		5219B1451B9C26D600EF8763 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5219B1441B9C26D600EF8763 /* WebKit.framework */; };
 		52F5CAE51B8336FD00E97BB8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 52F5CAE41B8336FD00E97BB8 /* main.m */; };
 		52F5CAE81B8336FD00E97BB8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52F5CAE71B8336FD00E97BB8 /* AppDelegate.m */; };
@@ -29,8 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		52012C951B8418A30029998B /* WSWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSWebView.h; sourceTree = "<group>"; };
-		52012C961B8418A30029998B /* WSWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSWebView.m; sourceTree = "<group>"; };
+		520CC4F61BA514100027DC13 /* WSWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSWebView.h; sourceTree = "<group>"; };
+		520CC4F71BA514100027DC13 /* WSWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSWebView.m; sourceTree = "<group>"; };
 		5219B1441B9C26D600EF8763 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		52F5CADF1B8336FD00E97BB8 /* WSWebView-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WSWebView-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F5CAE31B8336FD00E97BB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -66,6 +66,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		520CC4F51BA514100027DC13 /* WSWebView */ = {
+			isa = PBXGroup;
+			children = (
+				520CC4F61BA514100027DC13 /* WSWebView.h */,
+				520CC4F71BA514100027DC13 /* WSWebView.m */,
+			);
+			path = WSWebView;
+			sourceTree = "<group>";
+		};
 		52F5CAD61B8336FD00E97BB8 = {
 			isa = PBXGroup;
 			children = (
@@ -88,13 +97,12 @@
 		52F5CAE11B8336FD00E97BB8 /* WSWebView-Demo */ = {
 			isa = PBXGroup;
 			children = (
+				520CC4F51BA514100027DC13 /* WSWebView */,
 				52F5CAE61B8336FD00E97BB8 /* AppDelegate.h */,
 				52F5CAE71B8336FD00E97BB8 /* AppDelegate.m */,
 				52F5CAE91B8336FD00E97BB8 /* ViewController.h */,
 				52F5CAEA1B8336FD00E97BB8 /* ViewController.m */,
 				52F5CAEC1B8336FD00E97BB8 /* Main.storyboard */,
-				52012C951B8418A30029998B /* WSWebView.h */,
-				52012C961B8418A30029998B /* WSWebView.m */,
 				52F5CAEF1B8336FD00E97BB8 /* Images.xcassets */,
 				52F5CAF11B8336FD00E97BB8 /* LaunchScreen.xib */,
 				52F5CAE21B8336FD00E97BB8 /* Supporting Files */,
@@ -229,7 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52F5CAEB1B8336FD00E97BB8 /* ViewController.m in Sources */,
-				52012C971B8418A30029998B /* WSWebView.m in Sources */,
+				520CC4F81BA514100027DC13 /* WSWebView.m in Sources */,
 				52F5CAE81B8336FD00E97BB8 /* AppDelegate.m in Sources */,
 				52F5CAE51B8336FD00E97BB8 /* main.m in Sources */,
 			);

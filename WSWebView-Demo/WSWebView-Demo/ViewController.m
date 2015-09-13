@@ -10,6 +10,7 @@
 #import "WSWebView.h"
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet WSWebView *web;
 
 @end
 
@@ -22,10 +23,11 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.jd.com/"]];
     //    [webView loadRequest:request];
     
-    WSWebView *webView = [[WSWebView alloc] initWithFrame:self.view.bounds];
+    WSWebView *webView = [[WSWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 200)];
     
     [self.view addSubview:webView];
     
+    [self.web ws_loadRequest:request];
     [webView ws_loadRequest:request];
     
 }

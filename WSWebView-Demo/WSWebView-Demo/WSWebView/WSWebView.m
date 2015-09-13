@@ -7,18 +7,19 @@
 //
 
 #import "WSWebView.h"
-#import <WebKit/WebKit.h>
 
 #define kWSIsAboveIos8 [UIDevice currentDevice].systemVersion.floatValue > 8.0
 
 @interface WSWebView ()<UIWebViewDelegate, WKNavigationDelegate>
-
+{
+    
+}
 @property (nonatomic, strong) UIWebView *webView;
 
 @property (nonatomic, strong) WKWebView *wkWebView;
 
+@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 @end
-
 
 
 @implementation WSWebView
@@ -33,30 +34,42 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
-        if (kWSIsAboveIos8) {
-            [self addSubview:self.wkWebView];
-            [self.wkWebView setFrame:frame];
-        } else {
-            [self addSubview:self.webView];
-            [self.wkWebView setFrame:self.bounds];
-        }
+        [self configureWebView];
         
     }
     return self;
 }
 
 
+- (void)awakeFromNib
+{
+    [self configureWebView];
+//    NSLog(@"%s %@",__func__, NSStringFromCGRect(self.bounds));
+}
+
+- (void)layoutSubviews
+{
+    NSLog(@"%s %@",__func__, NSStringFromCGRect(self.bounds));
+    
+    if (kWSIsAboveIos8) {
+        [self.wkWebView setFrame:self.bounds];
+    }else {
+        [self.webView setFrame:self.bounds];
+    }
+    [self.indicator setCenter:CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2)];
+    NSLog(@"%s center:  %@",__func__, NSStringFromCGPoint(self.center));
+}
+
 #pragma mark - WKNavigationDelegate Method
 
 /*! @abstract Decides whether to allow or cancel a navigation.
-@param webView The web view invoking the delegate method.
-@param navigationAction Descriptive information about the action
-triggering the navigation request.
-@param decisionHandler The decision handler to call to allow or cancel the
-navigation. The argument is one of the constants of the enumerated type WKNavigationActionPolicy.
-@discussion If you do not implement this method, the web view will load the request or, if appropriate, forward it to another application.
-*/
+ @param webView The web view invoking the delegate method.
+ @param navigationAction Descriptive information about the action
+ triggering the navigation request.
+ @param decisionHandler The decision handler to call to allow or cancel the
+ navigation. The argument is one of the constants of the enumerated type WKNavigationActionPolicy.
+ @discussion If you do not implement this method, the web view will load the request or, if appropriate, forward it to another application.
+ */
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
     NSString *url = [navigationAction.request.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -65,6 +78,10 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
         decisionHandler(WKNavigationActionPolicyCancel);
     } else {
         decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    
+    if ([_delegate respondsToSelector:@selector(wswebView:shouldStartLoadWithRequest:)]) {
+        [_delegate wswebView:self shouldStartLoadWithRequest:navigationAction.request];
     }
 }
 //
@@ -88,7 +105,11 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
  */
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
-    NSLog(@"%s", __func__);
+    //    NSLog(@"%s", __func__);
+    [self.indicator startAnimating];
+    if ([_delegate respondsToSelector:@selector(wswebView:didStartLoadWithUrl:)]) {
+        [_delegate wswebView:self didStartLoadWithUrl:webView.URL];
+    }
 }
 
 /*! @abstract Invoked when a server redirect is received for the main
@@ -127,7 +148,11 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
  */
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
-    NSLog(@"%s", __func__);
+    //    NSLog(@"%s", __func__);
+    [self.indicator stopAnimating];
+    if ([_delegate respondsToSelector:@selector(wswebView:didFinisheLoadWithUrl:)]) {
+        [_delegate wswebView:self didFinisheLoadWithUrl:webView.URL];
+    }
 }
 
 /*! @abstract Invoked when an error occurs during a committed main frame
@@ -138,7 +163,11 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
  */
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    NSLog(@"%s", __func__);
+    //    NSLog(@"%s", __func__);
+    [self.indicator stopAnimating];
+    if ([_delegate respondsToSelector:@selector(wswebView:didFailLoadWithError:)]) {
+        [_delegate wswebView:self didFailLoadWithError:error];
+    }
 }
 
 
@@ -160,20 +189,78 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
 //- (void)updateConstraints
 //{
 //    [super updateConstraints];
-//    
+//
 //    if (kWSIsAboveIos8) {
-//        
+//
 //        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[_wkWebView]|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_wkWebView)]];
 //        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_wkWebView]|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_wkWebView)]];
 //    } else {
 //        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[_webView]|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_webView)]];
 //        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_webView]|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_webView)]];
 //    }
-//    
+//
 //}
+
+
+
+#pragma mark - UIWebViewDelegate
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    [self.indicator startAnimating];
+    if ([_delegate respondsToSelector:@selector(wswebView:didStartLoadWithUrl:)]) {
+        [_delegate wswebView:self didStartLoadWithUrl:webView.request.URL];
+    }
+}
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    if ([_delegate respondsToSelector:@selector(wswebView:shouldStartLoadWithRequest:)]) {
+        [_delegate wswebView:self shouldStartLoadWithRequest:request];
+    }
+    return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [self.indicator stopAnimating];
+    if ([_delegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
+        [_delegate wswebView:self didFinisheLoadWithUrl:webView.request.URL];
+    }
+}
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    if ([_delegate respondsToSelector:@selector(wswebView:didFailLoadWithError:)]) {
+        [_delegate wswebView:self didFailLoadWithError:error];
+    }
+    [self.indicator stopAnimating];
+}
+
+
 - (void)configureWebView
 {
+    if (kWSIsAboveIos8) {
+        [self addSubview:self.wkWebView];
+
+    } else {
+        [self addSubview:self.webView];
+  
+    }
     
+    [self addSubview:self.indicator];
+    
+    self.indicatorHidesWhenStopped = YES;
+    self.showIndicator = YES;
+}
+
+
+- (void)setShowIndicator:(BOOL)showIndicator
+{
+    self.indicator.hidden = !showIndicator;
+}
+
+- (void)setIndicatorHidesWhenStopped:(BOOL)indicatorHidesWhenStopped
+{
+    self.indicator.hidesWhenStopped = indicatorHidesWhenStopped;
 }
 
 
@@ -207,7 +294,7 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
         [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
         //控制用户是否可以选择页面元素内容
         [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
-
+        
     }
     
     return _webView;
@@ -238,13 +325,22 @@ navigation. The argument is one of the constants of the enumerated type WKNaviga
 }
 
 
+- (UIActivityIndicatorView *)indicator
+{
+    if (!_indicator) {
+        _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        _indicator.hidesWhenStopped = YES;
+    }
+    return _indicator;
+}
+
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 
 @end

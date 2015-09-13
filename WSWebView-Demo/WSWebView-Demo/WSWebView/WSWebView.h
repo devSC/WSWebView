@@ -7,11 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <WebKit/WebKit.h>
 
 @protocol WSWebViewDelegate;
 
 @interface WSWebView : UIView
+
+@property (nonatomic, readonly, strong) UIWebView *webView;
+
+@property (nonatomic, readonly, strong) WKWebView *wkWebView;
+
+@property (nonatomic) BOOL showIndicator; //Default is yes
+
+@property (nonatomic) BOOL indicatorHidesWhenStopped; //Default is yes.
 
 @property (nonatomic, assign) id<WSWebViewDelegate> delegate;
 
@@ -27,6 +35,6 @@
 
 - (void)wswebView: (WSWebView *)webView didFailLoadWithError: (NSError *)error;
 
-- (void)wswebView: (WSWebView *)webView shouldStartLoadWithRequest: (NSURLRequest *)request navigationType: (UIWebViewNavigationType)type;
-
+//- (void)wswebView: (WSWebView *)webView shouldStartLoadWithUrl: (NSURLRequest *)request navigationType: (UIWebViewNavigationType)type;
+- (void)wswebView: (WSWebView *)webView shouldStartLoadWithRequest: (NSURLRequest *)request;
 @end
