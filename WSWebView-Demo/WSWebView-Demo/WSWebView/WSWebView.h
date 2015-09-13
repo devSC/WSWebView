@@ -11,6 +11,9 @@
 
 @protocol WSWebViewDelegate;
 
+
+#define kWSSystemOSVersionIsAboveIos8 [UIDevice currentDevice].systemVersion.floatValue > 8.0
+
 @interface WSWebView : UIView
 
 @property (nonatomic, readonly, strong) UIWebView *webView;
@@ -21,14 +24,23 @@
 
 @property (nonatomic) BOOL indicatorHidesWhenStopped; //Default is yes.
 
-@property (nonatomic, assign) id<WSWebViewDelegate> delegate;
+@property (nonatomic, weak) id<WSWebViewDelegate> delegate;
 
 - (void)ws_loadRequest: (NSURLRequest *)request;
+
+///WebView can go back
+- (BOOL)canGoBack;
+
+//Go back
+- (void)goBack;
+- (void)goForward;
+
 
 @end
 
 @protocol WSWebViewDelegate <NSObject>
 
+@optional
 - (void)wswebView: (WSWebView *)webView didStartLoadWithUrl: (NSURL *)url;
 
 - (void)wswebView: (WSWebView *)webView didFinisheLoadWithUrl: (NSURL *)url;

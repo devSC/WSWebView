@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -18,20 +19,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3vR-dn-rJy" customClass="WSWebView">
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3vR-dn-rJy" customClass="WSWebView">
                                 <rect key="frame" x="0.0" y="301" width="600" height="299"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.96862745100000003" green="0.2901960784" blue="0.25490196079999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="299" id="vga-lA-MNg"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="vga-lA-MNg"/>
+                                    </mask>
+                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="3vR-dn-rJy" secondAttribute="trailing" constant="-16" id="4Lo-oY-g08"/>
                             <constraint firstItem="3vR-dn-rJy" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-16" id="Ew0-Bs-ZnA"/>
+                            <constraint firstAttribute="width" secondItem="3vR-dn-rJy" secondAttribute="height" multiplier="4:3" id="HiC-mx-OBh"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="3vR-dn-rJy" secondAttribute="bottom" id="ISG-Xn-KbP"/>
+                            <constraint firstAttribute="centerY" secondItem="3vR-dn-rJy" secondAttribute="centerY" id="ZCq-Bc-wIr"/>
+                            <constraint firstAttribute="width" secondItem="3vR-dn-rJy" secondAttribute="height" multiplier="600:299" id="joT-QR-qVk"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="HiC-mx-OBh"/>
+                                <exclude reference="ZCq-Bc-wIr"/>
+                                <exclude reference="joT-QR-qVk"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="HiC-mx-OBh"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="web" destination="3vR-dn-rJy" id="LXn-An-e32"/>
@@ -39,7 +60,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="417" y="439"/>
+            <point key="canvasLocation" x="-72" y="398"/>
         </scene>
     </scenes>
 </document>

@@ -7,8 +7,7 @@
 //
 
 #import "WSWebView.h"
-
-#define kWSIsAboveIos8 [UIDevice currentDevice].systemVersion.floatValue > 8.0
+#import <WebKit/WKUserScript.h>
 
 @interface WSWebView ()<UIWebViewDelegate, WKNavigationDelegate>
 {
@@ -44,20 +43,17 @@
 - (void)awakeFromNib
 {
     [self configureWebView];
-//    NSLog(@"%s %@",__func__, NSStringFromCGRect(self.bounds));
+    //    NSLog(@"%s %@",__func__, NSStringFromCGRect(self.bounds));
 }
 
 - (void)layoutSubviews
 {
-    NSLog(@"%s %@",__func__, NSStringFromCGRect(self.bounds));
-    
-    if (kWSIsAboveIos8) {
+    if (kWSSystemOSVersionIsAboveIos8) {
         [self.wkWebView setFrame:self.bounds];
     }else {
         [self.webView setFrame:self.bounds];
     }
     [self.indicator setCenter:CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2)];
-    NSLog(@"%s center:  %@",__func__, NSStringFromCGPoint(self.center));
 }
 
 #pragma mark - WKNavigationDelegate Method
@@ -139,6 +135,15 @@
  */
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
 {
+    //    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:nil];
+    //    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:nil];
+    //    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:^(id str, NSError *error) {
+    //
+    //    }];
+    //    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:^(id str, NSError *error) {
+    
+    //    }];
+    
     NSLog(@"%s", __func__);
 }
 
@@ -223,7 +228,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self.indicator stopAnimating];
-    if ([_delegate respondsToSelector:@selector(webViewDidFinishLoad:)]) {
+    if ([_delegate respondsToSelector:@selector(wswebView:didFinisheLoadWithUrl:)]) {
         [_delegate wswebView:self didFinisheLoadWithUrl:webView.request.URL];
     }
 }
@@ -238,12 +243,10 @@
 
 - (void)configureWebView
 {
-    if (kWSIsAboveIos8) {
+    if (kWSSystemOSVersionIsAboveIos8) {
         [self addSubview:self.wkWebView];
-
     } else {
         [self addSubview:self.webView];
-  
     }
     
     [self addSubview:self.indicator];
@@ -267,11 +270,37 @@
 #pragma mark - Privite method
 - (void)ws_loadRequest:(NSURLRequest *)request
 {
-    if (kWSIsAboveIos8) {
+    if (kWSSystemOSVersionIsAboveIos8) {
         [self.wkWebView loadRequest:request];
     } else {
         [self.webView loadRequest:request];
         [self.webView request];
+    }
+}
+
+- (BOOL)canGoBack
+{
+    if (kWSSystemOSVersionIsAboveIos8) {
+        return [self.wkWebView canGoBack];
+    } else {
+        return [self.webView canGoBack];
+    }
+}
+- (void)goBack
+{
+    if (kWSSystemOSVersionIsAboveIos8) {
+        [self.wkWebView goBack];
+    } else {
+        [self.webView goBack];
+    }
+}
+
+- (void)goForward
+{
+    if (kWSSystemOSVersionIsAboveIos8) {
+        [self.wkWebView goForward];
+    } else {
+        [self.webView goForward];
     }
 }
 
@@ -305,7 +334,11 @@
 {
     if (!_wkWebView) {
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-        configuration.userContentController = [[WKUserContentController alloc] init];
+        WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+        //        [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"document.documentElement.style.webkitTouchCallout='none';" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES]];
+        //         [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"document.documentElement.style.webkitUserSelect='none';" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES]];
+        //        [userContentController removeAllUserScripts];
+        configuration.userContentController = userContentController;
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = NO;
         
         _wkWebView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
@@ -313,13 +346,6 @@
         _wkWebView.allowsBackForwardNavigationGestures = YES;
         _wkWebView.navigationDelegate = self;
         _wkWebView.backgroundColor = [UIColor grayColor];
-        [_wkWebView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:^(id success, NSError *error) {
-            
-        }];
-        
-        [_wkWebView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none';" completionHandler:^(id success, NSError *error) {
-            
-        }];
     }
     return _wkWebView;
 }
